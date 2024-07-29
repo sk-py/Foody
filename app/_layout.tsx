@@ -37,10 +37,10 @@ export default function RootLayout() {
       <BottomSheetModalProvider>
         <PaperProvider>
           <Stack>
-            {/* <Stack.Screen
+            <Stack.Screen
               name="index"
               options={{ header: () => <CustomHeader /> }}
-            /> */}
+            />
 
             <Stack.Screen
               name="(modal)/filter"
@@ -49,6 +49,26 @@ export default function RootLayout() {
                 animation: "slide_from_bottom",
                 // headerShown: false,
                 headerTitle: "Filters",
+                headerTitleStyle: { fontFamily: "LatoBold" },
+                headerTitleAlign: "center",
+                headerShadowVisible: false,
+                headerLeft: () => (
+                  <Pressable
+                    onPress={() => router.back()}
+                    style={{ paddingHorizontal: "2%" }}
+                  >
+                    <Ionicons name="close" color={"#000"} size={25} />
+                  </Pressable>
+                ),
+              }}
+            />
+            <Stack.Screen
+              name="(modal)/mapScreen"
+              options={{
+                presentation: "fullScreenModal",
+                animation: "slide_from_bottom",
+                // headerShown: false,
+                headerTitle: "Location",
                 headerTitleStyle: { fontFamily: "LatoBold" },
                 headerTitleAlign: "center",
                 headerShadowVisible: false,

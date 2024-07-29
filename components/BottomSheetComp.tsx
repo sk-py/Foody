@@ -6,11 +6,13 @@ import {
   Dimensions,
   Keyboard,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 
-import Constants from "expo-constants";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { router } from "expo-router";
 
 const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
   // ref
@@ -18,10 +20,10 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
   console.log(ShowBottomSheet);
 
   // variables
-  const statusBarHeight = Constants.statusBarHeight;
+  const addressList = [];
 
   const snapPoints = useMemo(
-    () => ["60%", Dimensions.get("window").height],
+    () => ["50%", addressList?.length > 0 ? "80%" : "50%"],
     []
   );
 
@@ -50,20 +52,104 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
     []
   );
 
+  const handleAddAddressBtn = () => {
+    bottomSheetModalRef?.current?.forceClose({ duration: 500 });
+    router.push("/(modal)/mapScreen");
+  };
+
+  const UnExpandedView = useCallback(() => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            fontFamily: "LatoBold",
+            marginBottom: "5%",
+          }}
+        >
+          Delivery adress
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: "2%",
+            paddingHorizontal: "3%",
+          }}
+        >
+          <View style={{ flex: 1, height: 1, backgroundColor: "#50505060" }} />
+          <Text
+            style={{
+              fontFamily: "LatoBold",
+              paddingHorizontal: "2%",
+              opacity: 0.4,
+              letterSpacing: 2,
+            }}
+          >
+            SAVED ADDRESSES
+          </Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: "#50505060" }} />
+        </View>
+        <View style={{ paddingVertical: "4%" }} />
+        <View style={styles.addressCard}>
+          <Text style={{ paddingVertical: "2%" }}>
+            You don't have any saved address!
+          </Text>
+          <TouchableOpacity
+            style={styles.addAddressBtn}
+            onPress={handleAddAddressBtn}
+          >
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+            >
+              <MaterialIcons
+                name="delivery-dining"
+                color={Colors.primary}
+                size={20}
+              />
+              <Text>Add a delivery address now</Text>
+            </View>
+            <MaterialIcons
+              name="chevron-right"
+              color={Colors.primary}
+              size={20}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }, []);
+
+  const bottomSheetFooterComp = () => {
+    return (
+      <View>
+        <TouchableOpacity>
+          <Text>Done</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   // renders
   return (
     <BottomSheetModal
       ref={bottomSheetModalRef}
       index={0}
-      backgroundStyle={{ borderRadius: 0 }}
+      // footerComponent={bottomSheetFooterComp}
       snapPoints={snapPoints}
       onDismiss={() => setShowBottomSheet({ state: false, calledBy: "modal" })}
       backdropComponent={renderBackdrop}
       enableDismissOnClose
-      handleIndicatorStyle={{ display: "none" }}
+      // handleIndicatorStyle={{  }}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <Text>Awesome 🎉</Text>
+        <UnExpandedView />
       </BottomSheetView>
     </BottomSheetModal>
   );
@@ -72,6 +158,25 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
+    alignItems: "center",
+  },
+  addAddressBtn: {
+    borderColor: Colors.medium,
+    margin: "2%",
+    borderWidth: 0.3,
+    borderRadius: 10,
+    width: "90%",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: "2%",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+  },
+  addressCard: {
+    backgroundColor: "#f3f3f3",
+    padding: "2%",
+    borderRadius: 10,
+    width: "90%",
     alignItems: "center",
   },
 });
