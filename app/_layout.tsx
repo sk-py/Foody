@@ -68,7 +68,7 @@ export default function RootLayout() {
                 presentation: "fullScreenModal",
                 animation: "slide_from_bottom",
                 // headerShown: false,
-                headerTitle: "Location",
+                headerTitle: "Set Location",
                 headerTitleStyle: { fontFamily: "LatoBold" },
                 headerTitleAlign: "center",
                 headerShadowVisible: false,

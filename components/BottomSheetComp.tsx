@@ -7,12 +7,16 @@ import {
   Keyboard,
   View,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
+
+import * as Location from "expo-location";
+import { openSettings } from "expo-linking";
 
 const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
   // ref
@@ -36,6 +40,27 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
       bottomSheetModalRef.current?.dismiss();
     }
   }, [ShowBottomSheet]);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Location access denied",
+          "Please allow this app location access",
+          [
+            { text: "Cancel", isPreferred: false },
+            { text: "Allow", isPreferred: true, onPress: () => openSettings() },
+          ]
+        );
+        return;
+      }
+      const hasServicesEnabled = await Location.hasServicesEnabledAsync();
+      console.log(hasServicesEnabled);
+
+      console.log(status);
+    })();
+  }, []);
 
   const renderBackdrop = useCallback(
     (props: any) => (
