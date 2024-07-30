@@ -53,7 +53,6 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
             { text: "Allow", isPreferred: true, onPress: () => openSettings() },
           ]
         );
-        return;
       }
       const hasServicesEnabled = await Location.hasServicesEnabledAsync();
       console.log(hasServicesEnabled);
