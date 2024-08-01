@@ -59,7 +59,8 @@ const MiniCarousel = () => {
       data={CategoryData}
       contentContainerStyle={{
         gap: 15,
-        paddingVertical: "5%",
+        paddingVertical: "4%",
+        paddingBottom: "6%",
         paddingHorizontal: "2%",
       }}
       showsHorizontalScrollIndicator={false}

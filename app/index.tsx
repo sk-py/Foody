@@ -1,9 +1,18 @@
-import { View, Text, ScrollView, Dimensions, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Dimensions,
+  StyleSheet,
+  FlatList,
+  Image,
+} from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
 import ParallaxCarousel from "@/components/ParallaxCarousel";
 import MiniCarousel from "@/components/MiniCarousel";
 import Title from "@/components/Title";
+import StrikeText from "@/components/StrikeText";
 
 const HorizontalSliderImages = [
   {
@@ -20,6 +29,36 @@ const HorizontalSliderImages = [
   },
 ];
 
+type restaurantsData = [
+  {
+    id: number;
+    distance: "";
+    name: "";
+    image: string;
+  }
+];
+
+const restaurantsData = [
+  {
+    id: 1,
+    name: "Mc Donalds",
+    distance: "1 Km",
+    img: require("@/assets/images/macD.png"),
+  },
+  {
+    id: 2,
+    name: "Chings",
+    distance: "1 Km",
+    img: require("@/assets/images/kungPaoChicken.jpg"),
+  },
+];
+
+const renderRestaurantsCard = ({ item }) => (
+  <View>
+    <Image source={item.img} style={{ height: 50, width: 50 }} />
+  </View>
+);
+
 const index = () => {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -29,31 +68,26 @@ const index = () => {
         text="What's on your mind?"
         fontFamily="LatoMed"
         letterSpacing={2}
+        extraStyles={{
+          view: { paddingTop: "1%" },
+          text: { textTransform: "uppercase", fontSize: 15 },
+        }}
       />
       <MiniCarousel />
       <ParallaxCarousel data={HorizontalSliderImages} />
-      <Title
-        align="left"
-        color={"black"}
-        text="Top restaurants to explore"
-        extraStyles={{
-          padding: "2%",
-          paddingTop: "3%",
-        }}
+      <StrikeText
+        text="Top restaurants near you"
+        color="#000000"
+        opacity={0.6}
+        strikes={3}
+      />
+      <FlatList
+        horizontal
+        data={restaurantsData}
+        renderItem={renderRestaurantsCard}
       />
     </ScrollView>
   );
 };
 
 export default index;
-
-const styles = StyleSheet.create({
-  lightHeaderText: {
-    fontFamily: "LatoBold",
-    fontSize: 17,
-    color: Colors.medium,
-    paddingVertical: "1%",
-    textTransform: "uppercase",
-    letterSpacing: 2,
-  },
-});
