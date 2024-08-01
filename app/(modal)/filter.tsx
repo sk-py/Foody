@@ -208,7 +208,7 @@ const FilterScreen = () => {
               {item?.option}
             </Text>
           </View>
-          <View style={{ width: "30%" }}>
+          <View style={{ width: "20%" }}>
             <Image
               source={item.imageSrc}
               style={{
@@ -257,6 +257,7 @@ const FilterScreen = () => {
               name={"swap-vertical-sharp"}
               color={Colors.primary}
               size={20}
+              style={{ marginRight: "8%" }}
             />
           )}
         >
@@ -295,6 +296,7 @@ const FilterScreen = () => {
               name="fast-food-outline"
               color={Colors.primary}
               size={20}
+              style={{ marginRight: "8%" }}
             />
           )}
         >

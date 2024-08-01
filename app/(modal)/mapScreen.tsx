@@ -347,10 +347,11 @@ const MapScreen = () => {
   }, [retryCount]);
 
   // console.log(LocationSearchValue);
+  console.log(SelectedDetails);
 
   return (
     <KeyboardAvoidingView behavior="height" style={styles.container}>
-      {loading ? (
+      {loading && location.latitude === 0 ? (
         <View style={styles.loadingContainer}>
           <LottieView
             autoPlay
@@ -372,9 +373,9 @@ const MapScreen = () => {
         <MapView
           ref={mapViewRef}
           showsMyLocationButton={false}
+          rotateEnabled={false}
           userLocationUpdateInterval={5000}
           provider={PROVIDER_GOOGLE}
-          rotateEnabled={false}
           region={{
             latitude: location.latitude,
             longitude: location.longitude,
