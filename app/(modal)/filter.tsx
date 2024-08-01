@@ -40,85 +40,73 @@ const CategoryData: ItemType[] = [
     id: 1,
     option: "Pizza",
     category: "Category",
-    imageSrc:
-      "https://www.eatingwell.com/thmb/k3RhYf4XhAeqAejYjdInOlSOp6I=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/gettyimages-1124303516-36413b5bf61f45f1b7d18d90000b56b7.jpg",
+    imageSrc: require("@/assets/images/Pizza.jpg"),
   },
   {
     id: 2,
     option: "Drinks",
     category: "Category",
-    imageSrc:
-      "https://www.midwestliving.com/thmb/xYGftPhPPLHT8sL0af5-oNkWYrQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/smoky-peach-bourbon-slushie-ru333439-67b93e568b4f4b7d9402773e60c26b88.jpg",
+    imageSrc: require("@/assets/images/Drinks.jpg"),
   },
   {
     id: 3,
     option: "Desserts",
     category: "Category",
-    imageSrc:
-      "https://img.freepik.com/premium-photo/macro-chocolate-lava-cake-with-melted-chocolate-butter-topped-with-fresh-berries-ice-cream-vanilla_962751-200.jpg",
+    imageSrc: require("@/assets/images/Dessert.png"),
   },
   {
     id: 4,
     option: "North Indian",
     category: "Category",
-    imageSrc:
-      "https://i0.wp.com/www.tusktravel.com/blog/wp-content/uploads/2020/10/Shahi-Paneer.jpg?resize=850%2C531&ssl=1",
+    imageSrc: require("@/assets/images/NorthIndian.png"),
   },
   {
     id: 5,
     option: "Pasta",
     category: "Category",
-    imageSrc:
-      "https://www.eatwell101.com/wp-content/uploads/2022/05/Beef-Pasta-in-Tomato-Sauce.jpg",
+    imageSrc: require("@/assets/images/Pasta.jpg"),
   },
   {
     id: 6,
     option: "Burgers",
     category: "Category",
-    imageSrc:
-      "https://media.istockphoto.com/id/1206323282/photo/juicy-hamburger-on-white-background.jpg?s=612x612&w=0&k=20&c=K0DxyiChLwewXcCy8aLjjOqkc8QXPgQMAW-vwRCzqG4=",
+    imageSrc: require("@/assets/images/Burger.jpg"),
   },
   {
     id: 7,
     option: "Biryani",
     category: "Category",
-    imageSrc:
-      "https://chaiandchurros.com/wp-content/uploads/2020/10/StreetStyleChickenBiryaniPic1-500x500.jpg",
+    imageSrc: require("@/assets/images/Biryani.jpg"),
   },
   {
     id: 8,
     option: "Chinese",
     category: "Category",
-    imageSrc:
-      "https://images.immediate.co.uk/production/volatile/sites/30/2020/12/Noodles-with-chilli-oil-eggs-6ec34e9.jpg?quality=90&resize=556,505",
+    imageSrc: require("@/assets/images/Chinese.jpg"),
   },
   {
     id: 9,
     option: "South Indian",
     category: "Category",
-    imageSrc:
-      "https://www.bhmpics.com/downloads/south-indian-food-Wallpapers/64.1b7e1dc35b6071c9c835027bc652c4bf.jpg",
+    imageSrc: require("@/assets/images/SouthIndian.jpg"),
   },
   {
     id: 10,
     option: "Shawarma",
     category: "Category",
-    imageSrc:
-      "https://img.freepik.com/premium-photo/chicken-shawarma-png-images-food-images-fast-food-image_585805-401.jpg",
+    imageSrc: require("@/assets/images/Shawarma.jpg"),
   },
   {
     id: 11,
     option: "Salad",
     category: "Category",
-    imageSrc:
-      "https://img.freepik.com/premium-photo/fresh-vegetable-salad-vegetables-falling-into-bowl-with-salad-white-isolated_269543-197.jpg",
+    imageSrc: require("@/assets/images/Salad.png"),
   },
   {
     id: 12,
     option: "Shakes",
     category: "Category",
-    imageSrc:
-      "https://as1.ftcdn.net/v2/jpg/02/11/85/46/1000_F_211854663_QhLw15iS6xc8f5IBIQba1pMPInQ9EtLU.jpg",
+    imageSrc: require("@/assets/images/Shakes.jpg"),
   },
 ];
 
@@ -222,7 +210,7 @@ const FilterScreen = () => {
           </View>
           <View style={{ width: "30%" }}>
             <Image
-              source={{ uri: item.imageSrc }}
+              source={item.imageSrc}
               style={{
                 width: 40,
                 height: 40,

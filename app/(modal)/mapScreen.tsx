@@ -322,7 +322,9 @@ const MapScreen = () => {
             {SelectedDetails?.name.slice(0, 40)}
           </Text>
           <Text style={{ color: Colors.mediumDark }}>
-            {SelectedDetails?.formatted_address.slice(0, 150)}
+            {SelectedDetails?.formatted_address.length > 100
+              ? `${SelectedDetails?.formatted_address.slice(0, 100)}...`
+              : SelectedDetails?.formatted_address}
           </Text>
         </View>
       </View>
@@ -396,21 +398,8 @@ const MapScreen = () => {
           )}
         </MapView>
       )}
-      {/* {true && (
-        <TouchableOpacity
-          style={styles.refreshBtn}
-          activeOpacity={0.6}
-          onPress={fetchLocation}
-        >
-          <Text style={styles.refreshBtnTxt}>REFRESH LOCATION</Text>
-        </TouchableOpacity>
-      )} */}
+
       <GooglePlacesAutocomplete
-        // textInputProps={{
-        //   clearButtonMode: "while-editing",
-        //   value: LocationSearchValue,
-        //   onChangeText: setLocationSearchValue,
-        // }}
         keepResultsAfterBlur={false}
         nearbyPlacesAPI="GooglePlacesSearch"
         debounce={100}
@@ -440,7 +429,6 @@ const MapScreen = () => {
         placeholder="Search for area, street name..."
         onPress={(data, details = null) => {
           setSelectedDetails(details);
-          // setLocationSearchValue("");
           const point = details?.geometry?.location;
           if (!point) return;
           const newLocation = {
@@ -462,15 +450,6 @@ const MapScreen = () => {
         style={styles.locateMe}
       >
         <Ionicons name="locate" color={Colors.primary} size={25} />
-        {/* <Text
-          style={{
-            color: Colors.primary,
-            fontFamily: "LatoBold",
-            textTransform: "uppercase",
-          }}
-        >
-          Locate me
-        </Text> */}
       </TouchableOpacity>
       {SelectedDetails !== null && <LocationCrad />}
 

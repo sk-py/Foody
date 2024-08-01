@@ -128,9 +128,15 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
           <TouchableOpacity
             style={styles.addAddressBtn}
             onPress={handleAddAddressBtn}
+            activeOpacity={0.7}
           >
             <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                borderRadius: 10,
+              }}
             >
               <MaterialIcons
                 name="delivery-dining"
@@ -185,16 +191,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   addAddressBtn: {
-    borderColor: Colors.medium,
+    shadowColor: "#000000b5",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 4,
     margin: "2%",
-    borderWidth: 0.3,
-    borderRadius: 10,
+    // borderWidth: 1,
+    borderRadius: 8,
     width: "90%",
     flexDirection: "row",
     alignItems: "center",
-    padding: "2%",
+    padding: 10,
     justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFF",
   },
   addressCard: {
     backgroundColor: "#f3f3f3",
