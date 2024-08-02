@@ -17,11 +17,11 @@ const SearchBar = () => (
   <View style={styles.searchContainer}>
     <View style={styles.searchSection}>
       <View style={styles.searchField}>
-        <Ionicons name="search" color={Colors.medium} size={20} />
+        <Ionicons name="search" color={Colors.medium} size={22} />
         <TextInput
           enterKeyHint="search"
           style={{
-            padding: 7,
+            padding: 8,
             color: Colors.mediumDark,
             width: "100%",
             fontFamily: "LatoMed",

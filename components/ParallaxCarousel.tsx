@@ -11,7 +11,7 @@ const ParallaxCarousel = ({ data }) => {
       height={width / 2}
       autoPlay={true}
       data={data}
-      // enabled={false}
+      enabled={false}
       scrollAnimationDuration={2000}
       // onSnapToItem={(index) => console.log("current index:", index)}
       vertical

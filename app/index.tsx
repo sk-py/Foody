@@ -51,17 +51,74 @@ const restaurantsData = [
     distance: "1 Km",
     img: require("@/assets/images/kungPaoChicken.jpg"),
   },
+  {
+    id: 3,
+    name: "Pawan Restaurant",
+    distance: "1 Km",
+    img: require("@/assets/images/northDish.jpg"),
+  },
+  {
+    id: 4,
+    name: "Wow Momos",
+    distance: "1 Km",
+    img: require("@/assets/images/momos.jpg"),
+  },
+  {
+    id: 5,
+    name: "Tandoori Deight",
+    distance: "1 Km",
+    img: require("@/assets/images/tandoori.jpg"),
+  },
+  {
+    id: 6,
+    name: "Bombay Duck",
+    distance: "1 Km",
+    img: require("@/assets/images/prawns.jpeg"),
+  },
+  {
+    id: 7,
+    name: "Pizza Hut",
+    distance: "1 Km",
+    img: require("@/assets/images/pizzaRest.jpg"),
+  },
+  {
+    id: 8,
+    name: "Culinary Deight",
+    distance: "1 Km",
+    img: require("@/assets/images/culinaryDelight.png"),
+  },
+  {
+    id: 9,
+    name: "Gourmet Cafe",
+    distance: "1 Km",
+    img: require("@/assets/images/cheesyBrocolli.jpg"),
+  },
+  {
+    id: 10,
+    name: "Momos Hub",
+    distance: "1 Km",
+    img: require("@/assets/images/schezwanMomos.jpg"),
+  },
+  {
+    id: 11,
+    name: "Udupi House",
+    distance: "1 Km",
+    img: require("@/assets/images/veg1.jpg"),
+  },
+  {
+    id: 12,
+    name: "Bombay Duck",
+    distance: "1 Km",
+    img: require("@/assets/images/Pizza.jpg"),
+  },
 ];
-
-const renderRestaurantsCard = ({ item }) => (
-  <View>
-    <Image source={item.img} style={{ height: 50, width: 50 }} />
-  </View>
-);
 
 const index = () => {
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+    >
       <Title
         align="center"
         color={Colors.medium}
@@ -81,11 +138,47 @@ const index = () => {
         opacity={0.6}
         strikes={3}
       />
-      <FlatList
+      {/* <FlatList
         horizontal
         data={restaurantsData}
         renderItem={renderRestaurantsCard}
-      />
+        contentContainerStyle={{
+          gap: 10,
+          paddingVertical: "4%",
+          paddingHorizontal: "2%",
+          width: Dimensions.get("window").width * 2,
+          flexWrap: "wrap",
+        }}
+        showsHorizontalScrollIndicator={false}
+      /> */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          width: 1100,
+          flexWrap: "wrap",
+          gap: 20,
+          paddingVertical: 30,
+          flexDirection: "row",
+          // backgroundColor: "#000",
+          padding: 20,
+        }}
+      >
+        {restaurantsData.map((item) => {
+          return (
+            <View key={item.id} style={{ width: 160, height: 200 }}>
+              <Image
+                source={item.img}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  resizeMode: "cover",
+                }}
+              />
+            </View>
+          );
+        })}
+      </ScrollView>
     </ScrollView>
   );
 };
