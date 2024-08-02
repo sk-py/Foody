@@ -1,21 +1,21 @@
 import {
-  View,
-  Text,
-  ScrollView,
-  Dimensions,
-  StyleSheet,
-  FlatList,
+  Animated,
   Image,
-  TouchableOpacity,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import { Colors } from "@/constants/Colors";
 import ParallaxCarousel from "@/components/ParallaxCarousel";
 import MiniCarousel from "@/components/MiniCarousel";
 import Title from "@/components/Title";
 import StrikeText from "@/components/StrikeText";
 
-import { LinearGradient } from "expo-linear-gradient";
+import GridViewComp from "@/components/GridViewComp";
+import PressableView from "@/components/PressableView";
 
 const HorizontalSliderImages = [
   {
@@ -32,125 +32,122 @@ const HorizontalSliderImages = [
   },
 ];
 
-type restaurantsData = [
-  {
-    id: number;
-    distance: "";
-    name: "";
-    image: string;
-  }
-];
-
-const restaurantsData = [
+const restaurantDetail = [
   {
     id: 1,
-    name: "Mc Donalds",
-    distance: "1 Km",
-    img: require("@/assets/images/macD.png"),
-    offer: ["60% OFF", "UPTO ₹120"],
-    desc: "Burgers, Fast Food, Snacks",
+    name: "BurgerKing",
+    location: "Thane West, Thane",
+    distance: "2.2 Km",
+    dishes: ["Burgers", "Fries", "Shakes"],
+    ratings: 4.5,
+    offer: ["50% OFF", "Buy 1 Get 1"],
+    imgSrc: require("@/assets/images/restaurants/BurgerKing.jpeg"),
   },
   {
     id: 2,
-    name: "Chings",
+    name: "Chicken Feast",
+    location: "Andheri East, Mumbai",
     distance: "1 Km",
-    img: require("@/assets/images/kungPaoChicken.jpg"),
-    offer: ["30% OFF", "UPTO ₹60"],
-    desc: "Chinese, Noodles, Dumplings",
+    dishes: ["Grilled Chicken", "Chicken Wings", "Chicken Salad"],
+    ratings: 4.0,
+    offer: ["30% OFF", "Free Drink"],
+    imgSrc: require("@/assets/images/restaurants/chicken.jpg"),
   },
   {
     id: 3,
-    name: "Pawan Restaurant",
-    distance: "1 Km",
-    img: require("@/assets/images/northDish.jpg"),
-    offer: ["FLAT ₹50", "OFF"],
-    desc: "North Indian, Curries, Roti, Paneer Dishes",
+    name: "Culinary Delight",
+    location: "Juhu, Mumbai",
+    distance: "4 Km",
+    dishes: ["Continental", "Italian", "Fusion Cuisine"],
+    ratings: 4.8,
+    offer: ["25% OFF", "Free Dessert"],
+    imgSrc: require("@/assets/images/restaurants/culinary.jpeg"),
   },
   {
     id: 4,
-    name: "Wow Momos",
-    distance: "1 Km",
-    img: require("@/assets/images/momos.jpg"),
-    offer: ["FLAT 40% OFF"],
-    desc: "Momos, Dumplings, Fast Food",
+    name: "Dominos",
+    location: "Ghatkopar, Mumbai",
+    distance: "2.5 Km",
+    dishes: ["Pizza", "Pasta", "Chicken Wings"],
+    ratings: 3.6,
+    offer: ["Buy 1 Get 1", "20% OFF"],
+    imgSrc: require("@/assets/images/restaurants/dominos.png"),
   },
   {
     id: 5,
-    name: "Tandoori Delight",
-    distance: "1 Km",
-    img: require("@/assets/images/tandoori.jpg"),
-    offer: ["FLAT ₹80 OFF"],
-    desc: "Tandoori Chicken, Kebabs, Naan",
+    name: "Tryst Lounge",
+    location: "Marine Drive, Mumbai",
+    distance: "3 Km",
+    dishes: ["Cocktails", "Mocktails", "Snacks"],
+    ratings: 4.6,
+    offer: ["Happy Hours", "20% OFF"],
+    imgSrc: require("@/assets/images/restaurants/Drinks.jpg"),
   },
   {
     id: 6,
     name: "Bombay Duck",
+    location: "Colaba, Mumbai",
     distance: "1 Km",
-    img: require("@/assets/images/prawns.jpeg"),
-    offer: ["30% OFF", "UPTO ₹75"],
-    desc: "Seafood, Prawns, Fish Curry",
+    dishes: ["Italian", "Seafood", "Fine Dining"],
+    ratings: 4.9,
+    offer: ["Special Discount", "Free Appetizer"],
+    imgSrc: require("@/assets/images/restaurants/fiveStar.jpg"),
   },
   {
     id: 7,
-    name: "Pizza Hut",
-    distance: "1 Km",
-    img: require("@/assets/images/pizzaRest.jpg"),
-    offer: ["Buy 1 Get 1"],
-    desc: "Pizza, Pasta, Garlic Bread",
+    name: "Italian Bistro",
+    location: "Bandra, Mumbai",
+    distance: "0.5 Km",
+    dishes: ["Pasta", "Pizza", "Salads"],
+    ratings: 4.7,
+    offer: ["30% OFF", "Free Drink"],
+    imgSrc: require("@/assets/images/restaurants/Italian.jpg"),
   },
   {
     id: 8,
-    name: "Culinary Delight",
-    distance: "1 Km",
-    img: require("@/assets/images/culinaryDelight.png"),
-    offer: ["FLAT ₹125 OFF", "Above ₹399"],
-    desc: "Gourmet Dishes, Continental, Fusion Cuisine",
+    name: "Mughlai Delights",
+    location: "Mulund, Mumbai",
+    distance: "2.2 Km",
+    dishes: ["Biryani", "Kebabs", "Curries"],
+    ratings: 4.3,
+    offer: ["20% OFF", "Free Dessert"],
+    imgSrc: require("@/assets/images/restaurants/Mughlai.jpg"),
   },
   {
     id: 9,
-    name: "Gourmet Cafe",
-    distance: "1 Km",
-    img: require("@/assets/images/cheesyBrocolli.jpg"),
-    offer: ["FLAT ₹60 OFF", "Above ₹299"],
-    desc: "Cafe, Sandwiches, Salads, Coffee",
+    name: "Therani Restaurant",
+    location: "Borivali, Mumbai",
+    distance: "1.5 Km",
+    dishes: ["Paneer Dishes", "Curries", "Roti"],
+    ratings: 4.4,
+    offer: ["50% OFF", "10% OFF"],
+    imgSrc: require("@/assets/images/restaurants/NorthIndian.jpg"),
   },
   {
     id: 10,
-    name: "Momos Hub",
-    distance: "1 Km",
-    img: require("@/assets/images/schezwanMomos.jpg"),
-    offer: ["ITEMS", "AT ₹50"],
-    desc: "Momos, Fast Food, Dumplings",
+    name: "Pasta Palace",
+    location: "Powai, Mumbai",
+    distance: "3 Km",
+    dishes: ["Pasta", "Garlic Bread", "Salads"],
+    ratings: 4.5,
+    offer: ["Buy 1 Get 1", "20% OFF"],
+    imgSrc: require("@/assets/images/restaurants/Pasta.jpg"),
   },
   {
     id: 11,
-    name: "Udupi House",
-    distance: "1 Km",
-    img: require("@/assets/images/veg1.jpg"),
-    offer: ["50% OFF", "UPTO ₹199"],
-    desc: "South Indian, Dosa, Idli, Vada",
-  },
-  {
-    id: 12,
-    name: "Dominoes",
-    distance: "1 Km",
-    img: require("@/assets/images/Pizza.jpg"),
-    offer: ["FLAT 30% OFF"],
-    desc: "Pizza, Pasta, Chicken Wings",
+    name: "Noir Cafe",
+    location: "Vile Parle, Mumbai",
+    distance: "2 Km",
+    dishes: ["Sandwiches", "Coffee", "Pastries"],
+    ratings: 4.1,
+    offer: ["10% OFF", "Free Coffee"],
+    imgSrc: require("@/assets/images/restaurants/someCafe.jpg"),
   },
 ];
 
 const index = () => {
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={{
-        flex: 1,
-        backgroundColor: "#FFF",
-        position: "relative",
-        zIndex: 5,
-      }}
-    >
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <Title
         align="center"
         color={Colors.medium}
@@ -165,129 +162,34 @@ const index = () => {
       <MiniCarousel />
       <ParallaxCarousel data={HorizontalSliderImages} />
       <StrikeText
-        text="Top restaurants near you"
+        text="Explore new deals"
         color="#000000"
         opacity={0.6}
         strikes={3}
       />
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          width: 1110,
-          flexWrap: "wrap",
-          gap: 20,
-          paddingVertical: 30,
-          flexDirection: "row",
-          // backgroundColor: "#000",
-          padding: 20,
-        }}
-      >
-        {restaurantsData.map((item) => {
-          return (
-            <TouchableOpacity key={item?.id} activeOpacity={0.7}>
-              <View
-                style={{
-                  width: 160,
-                  height: 200,
-                  position: "relative",
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  backgroundColor: "#FFF",
-                  shadowColor: "#000000cc",
-                  shadowOffset: { width: 0, height: 5 },
-                  shadowOpacity: 0.8,
-                  shadowRadius: 2,
-                  elevation: 6,
-                }}
-              >
-                <Image
-                  source={item.img}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    resizeMode: "cover",
-                  }}
-                />
-                <View
-                  style={{
-                    position: "absolute",
-                    width: 160,
-                    height: 200,
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-end",
-                    zIndex: 2,
-                  }}
-                >
-                  <View
-                    style={{
-                      paddingHorizontal: 10,
-                      paddingVertical: 8,
-                      gap: 4,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontFamily: "LatoBold",
-                        fontSize: 16,
-                      }}
-                    >
-                      {item.offer ? item.offer[0].toString() : ""}
-                    </Text>
-                    {item.offer && item.offer.length > 1 && (
-                      <Text
-                        style={{
-                          color: "white",
-                          fontFamily: "LatoMed",
-                          fontSize: 13,
-                        }}
-                      >
-                        {item.offer[1].toString()}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-                <LinearGradient
-                  // Background Linear Gradient
-                  colors={["transparent", "rgba(0, 0, 0, 0.801)"]}
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    width: 160,
-                    height: 200,
-                  }}
-                />
-              </View>
-              <View style={{ maxWidth: 160, overflow: "hidden" }}>
-                <View style={{ padding: 5, flexDirection: "column" }}>
-                  <Text style={{ fontFamily: "LatoBold", fontSize: 18 }}>
-                    {item?.name.length > 16
-                      ? `${item?.name.slice(0, 14)}...`
-                      : item?.name}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: "LatoMed",
-                      fontSize: 13,
-                      color: Colors.medium,
-                    }}
-                  >
-                    {item?.desc.length > 25
-                      ? `${item?.desc.slice(0, 25)}...`
-                      : item?.desc}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
+      <GridViewComp />
+      <StrikeText
+        text="Top restaurants near you"
+        color="#000000"
+        opacity={0.7}
+        strikes={2}
+      />
+      <View style={{ marginTop: "4%", marginBottom: "1%" }}>
+        {restaurantDetail.map((item) => {
+          return <PressableView key={item.id} item={item} />;
         })}
-      </ScrollView>
+      </View>
     </ScrollView>
   );
 };
 
 export default index;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    position: "relative",
+    zIndex: 5,
+  },
+});

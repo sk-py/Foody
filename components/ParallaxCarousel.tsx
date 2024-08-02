@@ -7,7 +7,8 @@ const ParallaxCarousel = ({ data }) => {
   return (
     <Carousel
       loop
-      width={width}
+      width={width - 10}
+      style={{ marginHorizontal: "auto", borderRadius: 10, overflow: "hidden" }}
       height={width / 2}
       autoPlay={true}
       data={data}
@@ -21,6 +22,8 @@ const ParallaxCarousel = ({ data }) => {
             flex: 1,
             justifyContent: "center",
             margin: "0.5%",
+            borderRadius: 10,
+            overflow: "hidden",
           }}
         >
           <Image

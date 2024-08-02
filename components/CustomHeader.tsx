@@ -54,9 +54,10 @@ const CustomHeader = () => {
   const [temperature, settemperature] = useState("Sun");
 
   const getWetherDetails = async () => {
+    const key = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
     try {
       const data = await fetch(
-        "http://api.weatherapi.com/v1/current.json?key=a949930bca0d46fa92f115049240208&q=Mumbai"
+        `http://api.weatherapi.com/v1/current.json?key=${key}&q=Mumbai`
       );
       const temp = await data.json();
       const { temp_c, condition, precip_mm } = temp?.current;
@@ -120,18 +121,6 @@ const CustomHeader = () => {
           }
         />
         <View style={styles.container}>
-          {/* <LinearGradient
-            colors={["#e7b9ad84", "transparent"]}
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: 0,
-              width: Dimensions.get("window").width,
-              height: "100%",
-              zIndex: -1,
-            }}
-          /> */}
           <TouchableOpacity>
             <Image
               source={require("@/assets/images/deliveryboy.jpg")}

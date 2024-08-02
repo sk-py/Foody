@@ -9,7 +9,7 @@ const StrikeText = ({ text = "", color = "", opacity = 0.4, strikes = 1 }) => {
         alignItems: "center",
         padding: "2%",
         paddingHorizontal: "3%",
-        marginTop: "4%",
+        marginTop: "6%",
       }}
     >
       {strikes == 2 && (
