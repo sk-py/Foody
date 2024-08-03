@@ -8,7 +8,12 @@ const ParallaxCarousel = ({ data }) => {
     <Carousel
       loop
       width={width - 10}
-      style={{ marginHorizontal: "auto", borderRadius: 10, overflow: "hidden" }}
+      style={{
+        marginHorizontal: "auto",
+        borderRadius: 10,
+        overflow: "hidden",
+        pointerEvents: "none",
+      }}
       height={width / 2}
       autoPlay={true}
       data={data}

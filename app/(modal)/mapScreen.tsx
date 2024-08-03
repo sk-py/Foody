@@ -382,7 +382,7 @@ const MapScreen = () => {
             latitudeDelta: location.latDelta,
             longitudeDelta: location.longDelta,
           }}
-          showsUserLocation
+          showsUserLocation={true}
           loadingEnabled
           showsBuildings
           showsCompass

@@ -16,8 +16,13 @@ import BottomSheetComp from "./BottomSheetComp";
 import LottieView from "lottie-react-native";
 
 const SearchBar = () => {
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    console.log("Height of header", height);
+  };
+
   return (
-    <View style={styles.searchContainer}>
+    <View onLayout={onLayout} style={styles.searchContainer}>
       <View style={styles.searchSection}>
         <View style={styles.searchField}>
           <Ionicons name="search" color={Colors.medium} size={22} />
@@ -69,7 +74,7 @@ const CustomHeader = () => {
       ) {
         settemperature("Winter");
       } else if (
-        temp_c < 28 ||
+        temp_c < 29 ||
         condition?.text?.toLowerCase()?.includes("sun")
       ) {
         settemperature("Sun");
@@ -100,73 +105,75 @@ const CustomHeader = () => {
           ShowBottomSheet={ShowBottomSheet}
           setShowBottomSheet={setShowBottomSheet}
         />
-        <LottieView
-          autoPlay
-          ref={animation}
-          style={{
-            width: Dimensions.get("window").width,
-            height: 5,
-            position: "absolute",
-            zIndex: -5,
-          }}
-          direction={1}
-          loop
-          resizeMode="cover"
-          source={
-            temperature == "Winter"
-              ? require("@/assets/images/Winter.json")
-              : temperature == "Rain"
-              ? require("../assets/images/Rain.json")
-              : require("@/assets/images/Sun.json")
-          }
-        />
-        <View style={styles.container}>
-          <TouchableOpacity>
-            <Image
-              source={require("@/assets/images/deliveryboy.jpg")}
-              resizeMode="contain"
-              style={styles.bikerImg}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={openBottomSheet}
-            style={styles.headerTitleBtn}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                color: "grey",
-                zIndex: 5,
-                fontFamily: "LatoBold",
-              }}
-            >
-              Deliver to
-            </Text>
+        <>
+          <LottieView
+            autoPlay
+            ref={animation}
+            style={{
+              width: Dimensions.get("window").width,
+              height: 5,
+              position: "absolute",
+              zIndex: -5,
+            }}
+            direction={1}
+            loop
+            resizeMode="cover"
+            source={
+              temperature == "Winter"
+                ? require("@/assets/images/Winter.json")
+                : temperature == "Rain"
+                ? require("../assets/images/Rain.json")
+                : require("@/assets/images/Sun.json")
+            }
+          />
+          <View style={styles.container}>
+            <TouchableOpacity>
+              <Image
+                source={require("@/assets/images/deliveryboy.jpg")}
+                resizeMode="contain"
+                style={styles.bikerImg}
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={openBottomSheet}
-              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+              style={styles.headerTitleBtn}
             >
               <Text
                 style={{
-                  fontSize: 16,
-                  fontWeight: "600",
+                  fontSize: 14,
+                  color: "grey",
+                  zIndex: 5,
                   fontFamily: "LatoBold",
                 }}
               >
-                Thane, Manpada
+                Deliver to
               </Text>
-              <Ionicons
-                name="chevron-down-outline"
-                size={20}
-                color={Colors.primary}
-              />
+              <TouchableOpacity
+                onPress={openBottomSheet}
+                style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    fontFamily: "LatoBold",
+                  }}
+                >
+                  Thane, Manpada
+                </Text>
+                <Ionicons
+                  name="chevron-down-outline"
+                  size={20}
+                  color={Colors.primary}
+                />
+              </TouchableOpacity>
             </TouchableOpacity>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.profileBtn}>
-            <Ionicons name="person" size={20} color={Colors.primary} />
-          </TouchableOpacity>
-        </View>
-        <SearchBar />
+            <TouchableOpacity style={styles.profileBtn}>
+              <Ionicons name="person" size={20} color={Colors.primary} />
+            </TouchableOpacity>
+          </View>
+          <SearchBar />
+        </>
       </SafeAreaView>
     </>
   );

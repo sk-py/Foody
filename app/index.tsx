@@ -1,13 +1,15 @@
 import {
+  ActivityIndicator,
   Animated,
   Image,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import ParallaxCarousel from "@/components/ParallaxCarousel";
 import MiniCarousel from "@/components/MiniCarousel";
@@ -16,6 +18,7 @@ import StrikeText from "@/components/StrikeText";
 
 import GridViewComp from "@/components/GridViewComp";
 import PressableView from "@/components/PressableView";
+import { Stack } from "expo-router";
 
 const HorizontalSliderImages = [
   {
@@ -143,43 +146,159 @@ const restaurantDetail = [
     offer: ["10% OFF", "Free Coffee"],
     imgSrc: require("@/assets/images/restaurants/someCafe.jpg"),
   },
+  {
+    id: 12,
+    name: "BurgerKing",
+    location: "Thane West, Thane",
+    distance: "2.2 Km",
+    dishes: ["Burgers", "Fries", "Shakes"],
+    ratings: 4.5,
+    offer: ["50% OFF", "Buy 1 Get 1"],
+    imgSrc: require("@/assets/images/restaurants/BurgerKing.jpeg"),
+  },
+  {
+    id: 13,
+    name: "Chicken Feast",
+    location: "Andheri East, Mumbai",
+    distance: "1 Km",
+    dishes: ["Grilled Chicken", "Chicken Wings", "Chicken Salad"],
+    ratings: 4.0,
+    offer: ["30% OFF", "Free Drink"],
+    imgSrc: require("@/assets/images/restaurants/chicken.jpg"),
+  },
+  {
+    id: 14,
+    name: "Culinary Delight",
+    location: "Juhu, Mumbai",
+    distance: "4 Km",
+    dishes: ["Continental", "Italian", "Fusion Cuisine"],
+    ratings: 4.8,
+    offer: ["25% OFF", "Free Dessert"],
+    imgSrc: require("@/assets/images/restaurants/culinary.jpeg"),
+  },
+  {
+    id: 15,
+    name: "Dominos",
+    location: "Ghatkopar, Mumbai",
+    distance: "2.5 Km",
+    dishes: ["Pizza", "Pasta", "Chicken Wings"],
+    ratings: 3.6,
+    offer: ["Buy 1 Get 1", "20% OFF"],
+    imgSrc: require("@/assets/images/restaurants/dominos.png"),
+  },
+  {
+    id: 16,
+    name: "Tryst Lounge",
+    location: "Marine Drive, Mumbai",
+    distance: "3 Km",
+    dishes: ["Cocktails", "Mocktails", "Snacks"],
+    ratings: 4.6,
+    offer: ["Happy Hours", "20% OFF"],
+    imgSrc: require("@/assets/images/restaurants/Drinks.jpg"),
+  },
 ];
 
 const index = () => {
+  const scrollY = useRef(new Animated.Value(0));
+  const [page, setpage] = useState(4);
+  const [loading, setloading] = useState(false);
+  const headerHeight = 60;
+
+  // const handleScroll = Animated.event(
+  //   [
+  //     {
+  //       nativeEvent: {
+  //         contentOffset: {
+  //           y: scrollY.current,
+  //         },
+  //       },
+  //     },
+  //   ],
+  //   {
+  //     useNativeDriver: true,
+  //   }
+  // );
+
+  // const scrollYClamped = Animated.diffClamp(scrollY.current, 0, headerHeight);
+
+  // const translateY = scrollYClamped.interpolate({
+  //   inputRange: [0, headerHeight],
+  //   outputRange: [0, -(headerHeight / 2)],
+  // });
+
+  // const translateYNumber = useRef();
+
+  // translateY.addListener(({ value }) => {
+  //   translateYNumber.current = value;
+  // });
+
+  // useEffect(() => {
+  //   console.log("TranslateY", translateY);
+  // }, [translateY]);
+
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize,
+  }) => {
+    // const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height;
+  };
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-      <Title
-        align="center"
-        color={Colors.medium}
-        text="What's on your mind?"
-        fontFamily="LatoMed"
-        letterSpacing={2}
-        extraStyles={{
-          view: { paddingTop: "1%" },
-          text: { textTransform: "uppercase", fontSize: 15 },
+    <>
+      {/* <Stack.Screen options={{ headerShown: true }} /> */}
+      <ScrollView
+        // onScroll={handleScroll}
+        showsVerticalScrollIndicator={false}
+        // style={styles.container}
+        onScroll={({ nativeEvent }) => {
+          if (isCloseToBottom(nativeEvent)) {
+            setloading(true), setpage((prev) => prev + 4);
+            setloading(false);
+          }
         }}
-      />
-      <MiniCarousel />
-      <ParallaxCarousel data={HorizontalSliderImages} />
-      <StrikeText
-        text="Explore new deals"
-        color="#000000"
-        opacity={0.6}
-        strikes={3}
-      />
-      <GridViewComp />
-      <StrikeText
-        text="Top restaurants near you"
-        color="#000000"
-        opacity={0.7}
-        strikes={2}
-      />
-      <View style={{ marginTop: "4%", marginBottom: "1%" }}>
-        {restaurantDetail.map((item) => {
-          return <PressableView key={item.id} item={item} />;
-        })}
-      </View>
-    </ScrollView>
+        style={[
+          styles.container,
+          {
+            // transform: [{ translateY }]
+          },
+        ]}
+      >
+        <Title
+          align="center"
+          color={Colors.medium}
+          text="What's your mind?"
+          fontFamily="LatoMed"
+          letterSpacing={2}
+          extraStyles={{
+            view: { paddingTop: "1%" },
+            text: { textTransform: "uppercase", fontSize: 15 },
+          }}
+        />
+        <MiniCarousel />
+        <ParallaxCarousel data={HorizontalSliderImages} />
+        <StrikeText
+          text="Explore new deals"
+          color="#000000"
+          opacity={0.6}
+          strikes={3}
+        />
+        <GridViewComp />
+        <StrikeText
+          text={`Top ${restaurantDetail.length} restaurants near you`}
+          color="#000000"
+          opacity={0.7}
+          strikes={2}
+        />
+        <View style={{ marginTop: "4%", marginBottom: "1%" }}>
+          {restaurantDetail.slice(0, page).map((item) => {
+            return <PressableView key={item.id} item={item} />;
+          })}
+        </View>
+        {loading && <ActivityIndicator size={"small"} color={Colors.primary} />}
+      </ScrollView>
+    </>
   );
 };
 
