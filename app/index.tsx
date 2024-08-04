@@ -241,8 +241,11 @@ const index = () => {
     contentOffset,
     contentSize,
   }) => {
-    // const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >= contentSize.height;
+    const paddingToBottom = 20;
+    return (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    );
   };
 
   return (

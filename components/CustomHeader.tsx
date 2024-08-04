@@ -7,13 +7,16 @@ import {
   TextInput,
   Dimensions,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { Link } from "expo-router";
 import BottomSheetComp from "./BottomSheetComp";
 import LottieView from "lottie-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { reverseGeocodeAsync } from "expo-location";
+import { useLocation } from "@/Context/LocationContext";
 
 const SearchBar = () => {
   const onLayout = (event) => {
@@ -50,7 +53,21 @@ const SearchBar = () => {
   );
 };
 
+type userLocationType = {
+  region?: string;
+  city?: string;
+  district?: string;
+};
+
 const CustomHeader = () => {
+  const [UserLocation, setUserLocation] = useState<userLocationType | null>(
+    null
+  );
+
+  const { setUserLocationContext, userLocation } = useLocation();
+
+  console.log("Location context: ", userLocation);
+
   const [ShowBottomSheet, setShowBottomSheet] = useState({
     state: false,
     calledBy: "",
@@ -58,45 +75,93 @@ const CustomHeader = () => {
 
   const [temperature, settemperature] = useState("Sun");
 
-  const getWetherDetails = async () => {
-    const key = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
+  const getLocationFromCache = async () => {
     try {
-      const data = await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=${key}&q=Mumbai`
-      );
-      const temp = await data.json();
-      const { temp_c, condition, precip_mm } = temp?.current;
-      if (condition?.text?.toLowerCase()?.includes("rain") || precip_mm > 0) {
-        settemperature("Rain");
-      } else if (
-        temp_c < 19 ||
-        condition?.text?.toLowerCase()?.includes("snow")
-      ) {
-        settemperature("Winter");
-      } else if (
-        temp_c < 29 ||
-        condition?.text?.toLowerCase()?.includes("sun")
-      ) {
-        settemperature("Sun");
-      } else {
-        settemperature("Sun");
-      }
+      const loc = await AsyncStorage.getItem("userLocation");
+      // console.log("loc: ", loc);
 
-      console.log(temp?.current?.temp_c);
+      const parsedData = await JSON.parse(loc);
+      // console.log(parsedData);
+
+      if (loc !== null) {
+        const data = await reverseGeocodeAsync({
+          latitude: parsedData?.latitude,
+          longitude: parsedData?.longitude,
+        });
+        setUserLocationContext(data);
+        setUserLocation({
+          city: data[0]?.city,
+          region: data[0]?.region,
+          district: data[0].district,
+        });
+      }
+      // console.log(data);
+
+      // console.log(await JSON.parse(loc));
+
+      return loc ? JSON.parse(loc) : null;
     } catch (error) {
-      console.log("Error while fetching data: ", error);
+      console.error("Error getting location from AsyncStorage:", error);
+      return null;
+    }
+  };
+  console.log("UserLocation.region = ", UserLocation?.region);
+
+  const getWeatherDetails = async () => {
+    const key = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
+    if (userLocation !== null || UserLocation !== null) {
+      try {
+        let region;
+        if (UserLocation?.region == null) {
+          region = userLocation[0]?.region;
+        } else {
+          region = UserLocation?.region;
+        }
+        const data = await fetch(
+          `http://api.weatherapi.com/v1/current.json?key=${key}&q=${region}`
+        );
+        const temp = await data.json();
+
+        const { temp_c, condition, precip_mm } = temp?.current;
+        if (condition?.text?.toLowerCase()?.includes("rain") || precip_mm > 0) {
+          settemperature("Rain");
+        } else if (
+          temp_c < 19 ||
+          condition?.text?.toLowerCase()?.includes("snow")
+        ) {
+          settemperature("Winter");
+        } else if (
+          temp_c < 29 ||
+          condition?.text?.toLowerCase()?.includes("sun")
+        ) {
+          settemperature("Sun");
+        } else {
+          settemperature("Sun");
+        }
+
+        console.log("Temperature:", temp?.current?.temp_c);
+      } catch (error) {
+        console.log("Error while fetching data: ", error);
+      }
     }
   };
 
   useEffect(() => {
-    getWetherDetails();
+    getLocationFromCache().then((value) => {
+      console.log(value, "from get cache");
+    });
   }, []);
+
+  useEffect(() => {
+    getWeatherDetails();
+  }, [UserLocation]);
 
   const openBottomSheet = () => {
     setShowBottomSheet({ state: !ShowBottomSheet.state, calledBy: "header" });
   };
 
   const animation = useRef<LottieView>(null);
+  // console.log(UserLocation);
 
   return (
     <>
@@ -106,26 +171,28 @@ const CustomHeader = () => {
           setShowBottomSheet={setShowBottomSheet}
         />
         <>
-          <LottieView
-            autoPlay
-            ref={animation}
-            style={{
-              width: Dimensions.get("window").width,
-              height: 5,
-              position: "absolute",
-              zIndex: -5,
-            }}
-            direction={1}
-            loop
-            resizeMode="cover"
-            source={
-              temperature == "Winter"
-                ? require("@/assets/images/Winter.json")
-                : temperature == "Rain"
-                ? require("../assets/images/Rain.json")
-                : require("@/assets/images/Sun.json")
-            }
-          />
+          {(UserLocation !== null || userLocation !== null) && (
+            <LottieView
+              autoPlay
+              ref={animation}
+              style={{
+                width: Dimensions.get("window").width,
+                height: 5,
+                position: "absolute",
+                zIndex: -5,
+              }}
+              direction={1}
+              loop
+              resizeMode="cover"
+              source={
+                temperature == "Winter"
+                  ? require("@/assets/images/Winter.json")
+                  : temperature == "Rain"
+                  ? require("../assets/images/Rain.json")
+                  : require("@/assets/images/Sun.json")
+              }
+            />
+          )}
           <View style={styles.container}>
             <TouchableOpacity>
               <Image
@@ -159,7 +226,11 @@ const CustomHeader = () => {
                     fontFamily: "LatoBold",
                   }}
                 >
-                  Thane, Manpada
+                  {userLocation !== null
+                    ? `${userLocation[0]?.district}, ${userLocation[0].city}`
+                    : UserLocation == null
+                    ? `Set location`
+                    : `${UserLocation.district}, ${UserLocation.city}`}
                 </Text>
                 <Ionicons
                   name="chevron-down-outline"

@@ -1,160 +1,3 @@
-// import {
-//   Keyboard,
-//   KeyboardAvoidingView,
-//   Platform,
-//   StyleSheet,
-//   Text,
-//   TouchableOpacity,
-//   View,
-// } from "react-native";
-// import React, { useEffect, useState } from "react";
-// import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-// import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-
-// import * as Location from "expo-location";
-// import { Colors } from "@/constants/Colors";
-// import { Ionicons } from "@expo/vector-icons";
-
-// type Location = {
-//   latitude: number;
-//   longitude: number;
-//   accuracy: number | null;
-//   latDelta: number;
-//   longDelta: number;
-// };
-
-// const mapScreen = () => {
-//   const [location, setLocation] = useState<Location>({
-//     latitude: 0,
-//     longitude: 0,
-//     accuracy: 0,
-//     latDelta: 0,
-//     longDelta: 0,
-//   });
-//   const [errorMsg, setErrorMsg] = useState("");
-
-//   useEffect(() => {
-//     (async () => {
-//       let { status } = await Location.requestForegroundPermissionsAsync();
-//       if (status !== "granted") {
-//         setErrorMsg("Permission to access location was denied");
-//         return;
-//       } else {
-//         let location = await Location.getCurrentPositionAsync({});
-//         const latitude = location?.coords?.latitude;
-//         const longitude = location?.coords?.longitude;
-//         const accuracy = location?.coords?.accuracy;
-//         console.log(location);
-
-//         const oneDegreeOfLongitudeInMeters = 111.32 * 1000;
-//         const circumference = (40075 / 360) * 1000;
-
-//         const latDelta = accuracy * (1 / (Math.cos(latitude) * circumference));
-//         const lonDelta = accuracy / oneDegreeOfLongitudeInMeters;
-//         console.log(latDelta, lonDelta);
-
-//         setLocation({
-//           latitude: latitude,
-//           longitude: longitude,
-//           accuracy: accuracy,
-//           latDelta: 0.001,
-//           longDelta: 0.001,
-//         });
-//       }
-//     })();
-//   }, []);
-
-//   return (
-//     <KeyboardAvoidingView behavior="height" style={styles.container}>
-//       {/* <View style={styles.container}> */}
-//       <GooglePlacesAutocomplete
-//         keyboardShouldPersistTaps="always"
-//         styles={{
-//           container: {
-//             flex: 0,
-//             backgroundColor: "#FFFFFF",
-//           },
-//           textInputContainer: {
-//             paddingTop: "1%",
-//             paddingHorizontal: "2%",
-//           },
-//         }}
-//         renderLeftButton={() => (
-//           <View style={{ alignItems: "center", justifyContent: "center" }}>
-//             <Ionicons
-//               name="search"
-//               size={20}
-//               color={Colors.mediumDark}
-//               style={{ paddingHorizontal: "2%" }}
-//             />
-//           </View>
-//         )}
-//         fetchDetails={true}
-//         placeholder="Search"
-//         onPress={(data, details = null) => {
-//           const address = details?.formatted_address;
-//           const point = details?.geometry?.location;
-//           if (!point) return;
-//           setLocation({
-//             ...location,
-//             latitude: point.lat,
-//             longitude: point.lng,
-//           });
-//           console.log(point);
-//         }}
-//         query={{
-//           key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
-//           language: "en",
-//         }}
-//       />
-//       <MapView
-//         showsMyLocationButton
-//         userLocationUpdateInterval={5000}
-//         provider={PROVIDER_GOOGLE} //*------Here
-//         region={{
-//           latitude: location.latitude,
-//           longitude: location.longitude,
-//           latitudeDelta: location.latDelta,
-//           longitudeDelta: location.longDelta,
-//         }}
-//         showsUserLocation
-//         loadingEnabled
-//         showsBuildings
-//         showsCompass
-//         style={{ flex: 1 }}
-//       />
-//       <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.6}>
-//         <Text style={styles.confirmBtnTxt}>CONFIRM</Text>
-//       </TouchableOpacity>
-//       {/* </View> */}
-//     </KeyboardAvoidingView>
-//   );
-// };
-
-// export default mapScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     // flex: 1,
-//     height: "100%",
-//     position: "relative",
-//   },
-//   confirmBtn: {
-//     position: "absolute",
-//     bottom: "2%",
-//     backgroundColor: Colors.primary,
-//     width: "90%",
-//     marginHorizontal: "5%",
-//     padding: "3.3%",
-//     alignItems: "center",
-//     borderRadius: 10,
-//   },
-//   confirmBtnTxt: {
-//     color: "#FFFFFF",
-//     fontSize: 17,
-//     fontFamily: "LatoBold",
-//   },
-// });
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -163,14 +6,9 @@ import {
   View,
   Alert,
   Image,
-  Keyboard,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import MapView, {
-  PROVIDER_GOOGLE,
-  Marker,
-  MapViewProps,
-} from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import {
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
@@ -181,7 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import LottieView from "lottie-react-native";
-import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
+import { useLocation } from "@/Context/LocationContext";
 
 type LocationType = {
   latitude: number;
@@ -201,12 +39,14 @@ const MapScreen = () => {
   });
   const [loading, setLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
-  const [LocationSearchValue, setLocationSearchValue] = useState("");
+  const [LocationCoOrdinates, setLocationCoOrdinates] = useState<any>(null);
   const [SelectedDetails, setSelectedDetails] =
     useState<GooglePlaceDetail | null>(null);
   const maxRetry = 3;
 
   const [locationChanged, setLocationChanged] = useState(false);
+
+  const { setUserLocationContext, userLocation } = useLocation();
 
   const animation = useRef<LottieView>(null);
   const mapViewRef = useRef<MapView>(null);
@@ -228,9 +68,15 @@ const MapScreen = () => {
     }
   };
 
-  const fetchLocation = async () => {
+  const fetchLocation = useCallback(async () => {
+    const start = performance.now();
+    let retryCount = 0;
+    const maxRetry = 3;
+    const timeout = 10000; // 10 seconds
+
     try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      // Request location permissions
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
           "Permission Denied",
@@ -240,32 +86,55 @@ const MapScreen = () => {
         return;
       }
 
+      // Fetch current location
       let location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
-        timeout: 10000,
+        timeout: timeout, // Set timeout for fetching location
       });
 
-      const latitude = location?.coords?.latitude;
-      const longitude = location?.coords?.longitude;
-      const accuracy = location?.coords?.accuracy;
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
+      const accuracy = location.coords.accuracy;
 
+      const data = await Location.reverseGeocodeAsync({
+        latitude: latitude,
+        longitude: longitude,
+      });
+      setUserLocationContext(data);
+
+      // setLocationCoOrdinates({ lat: latitude, lng: longitude });
+
+      // Constants for calculations
       const oneDegreeOfLongitudeInMeters = 111.32 * 1000;
       const circumference = (40075 / 360) * 1000;
 
-      const latDelta = accuracy * (1 / (Math.cos(latitude) * circumference));
+      // Calculate deltas
+      const latDelta =
+        accuracy * (1 / (Math.cos(latitude * (Math.PI / 180)) * circumference));
       const lonDelta = accuracy / oneDegreeOfLongitudeInMeters;
 
+      if (mapViewRef.current) {
+        mapViewRef.current.animateToRegion(
+          {
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: Math.max(latDelta, 0.001),
+            longitudeDelta: Math.max(lonDelta, 0.001),
+          },
+          1000
+        );
+      }
       const newLocation = {
-        latitude: latitude,
-        longitude: longitude,
-        accuracy: accuracy,
-        latDelta: 0.001,
-        longDelta: 0.001,
+        latitude,
+        longitude,
+        accuracy,
+        latDelta: Math.max(latDelta, 0.001), // Ensure reasonable delta
+        longDelta: Math.max(lonDelta, 0.001),
       };
 
       const cachedLocation = await getLocationFromCache();
 
-      // Check if the new location is significantly different from the cached one
+      // Check if the location has significantly changed
       if (
         !cachedLocation ||
         Math.abs(newLocation.latitude - cachedLocation.latitude) > 0.001 ||
@@ -276,22 +145,10 @@ const MapScreen = () => {
         setLocationChanged(true);
       }
 
-      if (mapViewRef.current) {
-        mapViewRef.current.animateToRegion(
-          {
-            latitude: newLocation.latitude,
-            longitude: newLocation.longitude,
-            latitudeDelta: newLocation.latDelta,
-            longitudeDelta: newLocation.longDelta,
-          },
-          1000
-        );
-      }
-
       setLoading(false);
     } catch (error) {
       if (retryCount < maxRetry) {
-        setRetryCount(retryCount + 1);
+        retryCount++;
         fetchLocation();
       } else {
         Alert.alert(
@@ -301,7 +158,26 @@ const MapScreen = () => {
         setLoading(false);
       }
     }
-  };
+
+    const end = performance.now();
+    console.log(`Call to fetchLocation took ${end - start} milliseconds`);
+  }, []); // Ensure dependencies are correctly set
+
+  // const getRegion = async () => {
+  //   if (LocationCoOrdinates !== null) {
+  //     console.log(LocationCoOrdinates);
+
+  //     const data = await Location.reverseGeocodeAsync({
+  //       latitude: LocationCoOrdinates?.latitude,
+  //       longitude: LocationCoOrdinates?.longitude,
+  //     });
+  //     setUserLocationContext(data);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getRegion();
+  // }, [LocationCoOrdinates]);
 
   const LocationCrad = useCallback(() => {
     return (
