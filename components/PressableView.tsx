@@ -1,5 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useRef, useCallback } from "react";
 import { Animated, Image, Pressable, Text, View } from "react-native";
 
@@ -23,6 +24,12 @@ const PressableView = React.memo(({ item }) => {
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
       <Pressable
+        onPress={() => {
+          router.navigate({
+            pathname: "./(modal)/Details",
+            params: { id: item?.id },
+          });
+        }}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         style={{

@@ -15,7 +15,12 @@ import { Link } from "expo-router";
 import BottomSheetComp from "./BottomSheetComp";
 import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { reverseGeocodeAsync } from "expo-location";
+import {
+  getCurrentPositionAsync,
+  hasServicesEnabledAsync,
+  LocationAccuracy,
+  reverseGeocodeAsync,
+} from "expo-location";
 import { useLocation } from "@/Context/LocationContext";
 
 const SearchBar = () => {
@@ -64,7 +69,14 @@ const CustomHeader = () => {
     null
   );
 
-  const { setUserLocationContext, userLocation } = useLocation();
+  const {
+    setUserLocationContext,
+    userLocation,
+    coOrdinates,
+    setCoOrdinatesContext,
+    setSavedUserLocation,
+    SavedUserLocation,
+  } = useLocation();
 
   console.log("Location context: ", userLocation);
 
@@ -78,8 +90,12 @@ const CustomHeader = () => {
   const getLocationFromCache = async () => {
     try {
       const loc = await AsyncStorage.getItem("userLocation");
-      // console.log("loc: ", loc);
+      console.log("loc: ", loc);
 
+      const savedLocation = await AsyncStorage.getItem("selectedLocation");
+
+      // console.log("Saved Location: ", await JSON.parse(savedLocation));
+      setSavedUserLocation(await JSON.parse(savedLocation));
       const parsedData = await JSON.parse(loc);
       // console.log(parsedData);
 
@@ -146,7 +162,54 @@ const CustomHeader = () => {
     }
   };
 
+  const fetchCoOrdinates = async () => {
+    try {
+      const status = await hasServicesEnabledAsync();
+
+      if (!status) {
+        return;
+      }
+
+      let location = await getCurrentPositionAsync({
+        accuracy: LocationAccuracy.High,
+        timeout: 5000, // Set timeout for fetching location
+      });
+
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
+      const accuracy = location.coords.accuracy;
+
+      // Constants for calculations
+      const oneDegreeOfLongitudeInMeters = 111.32 * 1000;
+      const circumference = (40075 / 360) * 1000;
+
+      // Calculate deltas
+      const latDelta =
+        accuracy * (1 / (Math.cos(latitude * (Math.PI / 180)) * circumference));
+      const lonDelta = accuracy / oneDegreeOfLongitudeInMeters;
+
+      const newLocation = {
+        latitude,
+        longitude,
+        accuracy,
+        latDelta: Math.max(latDelta, 0.001), // Ensure reasonable delta
+        longDelta: Math.max(lonDelta, 0.001),
+      };
+
+      setCoOrdinatesContext(newLocation);
+    } catch (error) {
+      console.log(
+        "Error while fetching CoOrdinates from CustomHeader: ",
+        error
+      );
+    }
+  };
+
   useEffect(() => {
+    // Fetch coordinates when component mounts
+    if (coOrdinates !== null) {
+      fetchCoOrdinates();
+    }
     getLocationFromCache().then((value) => {
       console.log(value, "from get cache");
     });
@@ -162,6 +225,7 @@ const CustomHeader = () => {
 
   const animation = useRef<LottieView>(null);
   // console.log(UserLocation);
+  console.log("Saved User Location: ", SavedUserLocation);
 
   return (
     <>
@@ -221,12 +285,16 @@ const CustomHeader = () => {
               >
                 <Text
                   style={{
-                    fontSize: 16,
+                    // fontSize: 16,
                     fontWeight: "600",
                     fontFamily: "LatoBold",
                   }}
                 >
-                  {userLocation !== null
+                  {SavedUserLocation !== null
+                    ? SavedUserLocation?.name?.length > 30
+                      ? `${SavedUserLocation?.name?.slice(0, 30)}...`
+                      : SavedUserLocation?.name
+                    : userLocation !== null
                     ? `${userLocation[0]?.district}, ${userLocation[0].city}`
                     : UserLocation == null
                     ? `Set location`

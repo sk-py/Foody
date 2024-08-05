@@ -6,6 +6,8 @@ import {
   View,
   Alert,
   Image,
+  Platform,
+  ToastAndroid,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
@@ -20,6 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import LottieView from "lottie-react-native";
 import { useLocation } from "@/Context/LocationContext";
+import { router } from "expo-router";
 
 type LocationType = {
   latitude: number;
@@ -46,10 +49,18 @@ const MapScreen = () => {
 
   const [locationChanged, setLocationChanged] = useState(false);
 
-  const { setUserLocationContext, userLocation } = useLocation();
+  const {
+    setUserLocationContext,
+    userLocation,
+    coOrdinates,
+    setCoOrdinatesContext,
+    SavedUserLocation,
+    setSavedUserLocation,
+  } = useLocation();
 
   const animation = useRef<LottieView>(null);
   const mapViewRef = useRef<MapView>(null);
+
   const saveLocation = async (loc: LocationType) => {
     try {
       await AsyncStorage.setItem("userLocation", JSON.stringify(loc));
@@ -72,7 +83,7 @@ const MapScreen = () => {
     const start = performance.now();
     let retryCount = 0;
     const maxRetry = 3;
-    const timeout = 10000; // 10 seconds
+    const timeout = 3000; // 3 seconds
 
     try {
       // Request location permissions
@@ -143,6 +154,7 @@ const MapScreen = () => {
         setLocation(newLocation);
         saveLocation(newLocation);
         setLocationChanged(true);
+        setCoOrdinatesContext(newLocation);
       }
 
       setLoading(false);
@@ -161,23 +173,7 @@ const MapScreen = () => {
 
     const end = performance.now();
     console.log(`Call to fetchLocation took ${end - start} milliseconds`);
-  }, []); // Ensure dependencies are correctly set
-
-  // const getRegion = async () => {
-  //   if (LocationCoOrdinates !== null) {
-  //     console.log(LocationCoOrdinates);
-
-  //     const data = await Location.reverseGeocodeAsync({
-  //       latitude: LocationCoOrdinates?.latitude,
-  //       longitude: LocationCoOrdinates?.longitude,
-  //     });
-  //     setUserLocationContext(data);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getRegion();
-  // }, [LocationCoOrdinates]);
+  }, []);
 
   const LocationCrad = useCallback(() => {
     return (
@@ -225,6 +221,37 @@ const MapScreen = () => {
   // console.log(LocationSearchValue);
   console.log(SelectedDetails);
 
+  const setLocationHandler = async () => {
+    console.log(SelectedDetails);
+    if (SelectedDetails == null) {
+      if (Platform.OS === "android") {
+        ToastAndroid.show("Search and select a location", 3000);
+        return;
+      } else {
+        Alert.alert(
+          "Location not selected",
+          "Please search and select a location",
+          [{ text: "Ok" }]
+        );
+        return;
+      }
+    }
+
+    if (SelectedDetails !== null) {
+      try {
+        setSavedUserLocation(SelectedDetails);
+        await AsyncStorage.setItem(
+          "selectedLocation",
+          JSON.stringify(SelectedDetails)
+        );
+
+        router.push("../");
+      } catch (error) {
+        console.error("Error saving location to AsyncStorage:", error);
+      }
+    }
+  };
+
   return (
     <KeyboardAvoidingView behavior="height" style={styles.container}>
       {loading && location.latitude === 0 ? (
@@ -252,12 +279,16 @@ const MapScreen = () => {
           rotateEnabled={false}
           userLocationUpdateInterval={5000}
           provider={PROVIDER_GOOGLE}
-          region={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: location.latDelta,
-            longitudeDelta: location.longDelta,
-          }}
+          region={
+            coOrdinates !== null
+              ? coOrdinates
+              : {
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                  latitudeDelta: location.latDelta,
+                  longitudeDelta: location.longDelta,
+                }
+          }
           showsUserLocation={true}
           loadingEnabled
           showsBuildings
@@ -330,7 +361,11 @@ const MapScreen = () => {
       </TouchableOpacity>
       {SelectedDetails !== null && <LocationCrad />}
 
-      <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.6}>
+      <TouchableOpacity
+        onPress={setLocationHandler}
+        style={styles.confirmBtn}
+        activeOpacity={0.6}
+      >
         <Text style={styles.confirmBtnTxt}>CONFIRM</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>

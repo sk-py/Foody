@@ -21,7 +21,7 @@ import { openSettings } from "expo-linking";
 const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  console.log(ShowBottomSheet);
+  // console.log(ShowBottomSheet);
 
   // variables
   const addressList = [];
@@ -54,8 +54,8 @@ const BottomSheetComp = ({ ShowBottomSheet, setShowBottomSheet }: any) => {
           ]
         );
       }
-      const hasServicesEnabled = await Location.hasServicesEnabledAsync();
-      console.log(hasServicesEnabled);
+      // const hasServicesEnabled = await Location.hasServicesEnabledAsync();
+      // console.log(hasServicesEnabled);
 
       console.log(status);
     })();

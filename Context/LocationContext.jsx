@@ -4,13 +4,28 @@ import React, { createContext, useState, useContext } from "react";
 const LocationContext = createContext({
   userLocation: null,
   setUserLocationContext: () => {},
+  coOrdinates: null,
+  setCoOrdinatesContext: () => {},
+  SavedUserLocation: null,
+  setSavedUserLocation: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
   const [userLocation, setUserLocationContext] = useState(null);
+  const [coOrdinates, setCoOrdinatesContext] = useState(null);
+  const [SavedUserLocation, setSavedUserLocation] = useState(null);
 
   return (
-    <LocationContext.Provider value={{ userLocation, setUserLocationContext }}>
+    <LocationContext.Provider
+      value={{
+        userLocation,
+        setUserLocationContext,
+        coOrdinates,
+        setCoOrdinatesContext,
+        SavedUserLocation,
+        setSavedUserLocation,
+      }}
+    >
       {children}
     </LocationContext.Provider>
   );
