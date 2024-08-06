@@ -29,7 +29,7 @@ type FilterType = {
 
 const SortByData: ItemType[] = [
   { id: 2, option: "Rating", category: "Sort" },
-  { id: 5, option: "Pure Veg", category: "Sort" },
+  // { id: 5, option: "Pure Veg", category: "Sort" },
   { id: 1, option: "Delivery Time", category: "Sort" },
   { id: 4, option: "Cost: High To Low", category: "Sort" },
   { id: 3, option: "Cost: Low To High", category: "Sort" },
@@ -319,7 +319,7 @@ const FilterScreen = () => {
                 height: Dimensions.get("window").height / 2.2,
               }}
               ListFooterComponent={() => (
-                <View style={{ padding: "20%" }}></View>
+                <View style={{ padding: "10%" }}></View>
               )}
             />
           </View>

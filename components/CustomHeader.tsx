@@ -78,7 +78,7 @@ const CustomHeader = () => {
     SavedUserLocation,
   } = useLocation();
 
-  console.log("Location context: ", userLocation);
+  // console.log("Location context: ", userLocation);
 
   const [ShowBottomSheet, setShowBottomSheet] = useState({
     state: false,
@@ -90,26 +90,31 @@ const CustomHeader = () => {
   const getLocationFromCache = async () => {
     try {
       const loc = await AsyncStorage.getItem("userLocation");
-      console.log("loc: ", loc);
+      // console.log("loc: ", loc);
 
       const savedLocation = await AsyncStorage.getItem("selectedLocation");
 
       // console.log("Saved Location: ", await JSON.parse(savedLocation));
-      setSavedUserLocation(await JSON.parse(savedLocation));
+      const addr = await JSON.parse(savedLocation);
+      setSavedUserLocation(addr);
       const parsedData = await JSON.parse(loc);
       // console.log(parsedData);
 
       if (loc !== null) {
-        const data = await reverseGeocodeAsync({
-          latitude: parsedData?.latitude,
-          longitude: parsedData?.longitude,
-        });
-        setUserLocationContext(data);
-        setUserLocation({
-          city: data[0]?.city,
-          region: data[0]?.region,
-          district: data[0].district,
-        });
+        try {
+          const data = await reverseGeocodeAsync({
+            latitude: parsedData?.latitude,
+            longitude: parsedData?.longitude,
+          });
+          setUserLocationContext(data);
+          setUserLocation({
+            city: data[0]?.city,
+            region: data[0]?.region,
+            district: data[0].district,
+          });
+        } catch (error) {
+          console.log("Error while reverse geocoding: ", error);
+        }
       }
       // console.log(data);
 
@@ -121,13 +126,14 @@ const CustomHeader = () => {
       return null;
     }
   };
-  console.log("UserLocation.region = ", UserLocation?.region);
+  console.log("UserLocation.region = ", UserLocation?.city);
 
   const getWeatherDetails = async () => {
     const key = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
     if (userLocation !== null || UserLocation !== null) {
       try {
         let region;
+
         if (UserLocation?.region == null) {
           region = userLocation[0]?.region;
         } else {
@@ -135,8 +141,10 @@ const CustomHeader = () => {
         }
         const data = await fetch(
           `http://api.weatherapi.com/v1/current.json?key=${key}&q=${region}`
+          // `http://api.weatherapi.com/v1/current.json?key=${key}&q=Thane`
         );
         const temp = await data.json();
+        console.log(temp);
 
         const { temp_c, condition, precip_mm } = temp?.current;
         if (condition?.text?.toLowerCase()?.includes("rain") || precip_mm > 0) {
@@ -211,13 +219,14 @@ const CustomHeader = () => {
       fetchCoOrdinates();
     }
     getLocationFromCache().then((value) => {
-      console.log(value, "from get cache");
+      // console.log(value, "from get cache");
     });
+    getWeatherDetails();
   }, []);
 
   useEffect(() => {
     getWeatherDetails();
-  }, [UserLocation]);
+  }, [SavedUserLocation, UserLocation]);
 
   const openBottomSheet = () => {
     setShowBottomSheet({ state: !ShowBottomSheet.state, calledBy: "header" });
@@ -225,7 +234,7 @@ const CustomHeader = () => {
 
   const animation = useRef<LottieView>(null);
   // console.log(UserLocation);
-  console.log("Saved User Location: ", SavedUserLocation);
+  // console.log("Saved User Location: ", SavedUserLocation);
 
   return (
     <>

@@ -219,10 +219,10 @@ const MapScreen = () => {
   }, [retryCount]);
 
   // console.log(LocationSearchValue);
-  console.log(SelectedDetails);
+  // console.log(SelectedDetails);
 
   const setLocationHandler = async () => {
-    console.log(SelectedDetails);
+    // console.log(SelectedDetails);
     if (SelectedDetails == null) {
       if (Platform.OS === "android") {
         ToastAndroid.show("Search and select a location", 3000);
@@ -337,6 +337,7 @@ const MapScreen = () => {
         placeholder="Search for area, street name..."
         onPress={(data, details = null) => {
           setSelectedDetails(details);
+
           const point = details?.geometry?.location;
           if (!point) return;
           const newLocation = {

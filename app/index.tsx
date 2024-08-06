@@ -4,6 +4,7 @@ import {
   Image,
   Pressable,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -251,6 +252,7 @@ const index = () => {
   return (
     <>
       {/* <Stack.Screen options={{ headerShown: true }} /> */}
+      <StatusBar backgroundColor={"transparent"} translucent />
       <ScrollView
         // onScroll={handleScroll}
         showsVerticalScrollIndicator={false}
@@ -280,7 +282,7 @@ const index = () => {
           }}
         />
         <MiniCarousel />
-        <ParallaxCarousel data={HorizontalSliderImages} />
+        {/* <ParallaxCarousel data={HorizontalSliderImages} /> */}
         <StrikeText
           text="Explore new deals"
           color="#000000"

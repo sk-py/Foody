@@ -43,7 +43,10 @@ export default function RootLayout() {
             <Stack>
               <Stack.Screen
                 name="index"
-                options={{ header: () => <CustomHeader />, freezeOnBlur: true }}
+                options={{
+                  header: () => <CustomHeader />,
+                  freezeOnBlur: true,
+                }}
               />
 
               <Stack.Screen
