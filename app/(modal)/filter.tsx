@@ -2,6 +2,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -241,89 +242,95 @@ const FilterScreen = () => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.filterView}>
-        <List.Accordion
-          expanded
-          rippleColor={Colors.ripple}
-          titleStyle={{ color: Colors.mediumDark }}
-          style={{
-            backgroundColor: "#FFF",
-            borderBottomWidth: 0.2,
-            borderBottomColor: "lightgrey",
-          }}
-          title="𝗦𝗼𝗿𝘁"
-          id="1"
-          right={({ isExpanded }) => (
-            <Ionicons
-              name={"swap-vertical-sharp"}
-              color={Colors.primary}
-              size={20}
-              style={{ marginRight: "8%" }}
-            />
-          )}
-        >
-          <Text
+        <ScrollView>
+          <List.Accordion
+            expanded
+            rippleColor={Colors.ripple}
+            titleStyle={{ color: Colors.mediumDark }}
             style={{
-              paddingHorizontal: "4%",
-              paddingVertical: "1%",
-              fontFamily: "LatoBold",
-              color: Colors.medium,
+              backgroundColor: "#FFF",
+              borderBottomWidth: 0.2,
+              borderBottomColor: "lightgrey",
             }}
+            title="𝗦𝗼𝗿𝘁"
+            id="1"
+            right={({ isExpanded }) => (
+              <Ionicons
+                name={"swap-vertical-sharp"}
+                color={Colors.primary}
+                size={20}
+                style={{ marginRight: "8%" }}
+              />
+            )}
           >
-            Sort by
-          </Text>
-          <View style={{ paddingHorizontal: 10, marginLeft: "1%" }}>
-            <FlatList
-              data={SortByData}
-              renderItem={renderSortItem}
-              keyExtractor={(item) => item.id.toString()}
-            />
-          </View>
-        </List.Accordion>
-
-        <List.Accordion
-          expanded
-          rippleColor={Colors.ripple}
-          titleStyle={{ color: Colors.mediumDark }}
-          style={{
-            backgroundColor: "#FFF",
-            borderBottomWidth: 0.2,
-            borderBottomColor: "lightgrey",
-          }}
-          title="𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗲𝘀"
-          id="2"
-          right={({ isExpanded }) => (
-            <Ionicons
-              name="fast-food-outline"
-              color={Colors.primary}
-              size={20}
-              style={{ marginRight: "8%" }}
-            />
-          )}
-        >
-          <Text
-            style={{
-              paddingHorizontal: "4%",
-              paddingVertical: "1%",
-              fontFamily: "LatoBold",
-              color: Colors.medium,
-            }}
-          >
-            Choose Categories
-          </Text>
-          <View style={{ paddingHorizontal: 10, marginLeft: "1%" }}>
-            <FlatList
-              data={CategoryData}
-              renderItem={renderCategoryItem}
-              keyExtractor={(item) => item.id.toString()}
+            <Text
               style={{
-                height: Dimensions.get("window").height / 2.2,
+                paddingHorizontal: "4%",
+                paddingVertical: "1%",
+                fontFamily: "LatoBold",
+                color: Colors.medium,
               }}
-              ListFooterComponent={() => (
-                <View style={{ padding: "10%" }}></View>
-              )}
-            />
-          </View>
-        </List.Accordion>
+            >
+              Sort by
+            </Text>
+            <View style={{ paddingHorizontal: 10, marginLeft: "1%" }}>
+              <FlatList
+                scrollEnabled={false}
+                data={SortByData}
+                renderItem={renderSortItem}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          </List.Accordion>
+
+          <List.Accordion
+            expanded
+            rippleColor={Colors.ripple}
+            titleStyle={{ color: Colors.mediumDark }}
+            style={{
+              backgroundColor: "#FFF",
+              borderBottomWidth: 0.2,
+              borderBottomColor: "lightgrey",
+            }}
+            title="𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝗲𝘀"
+            id="2"
+            right={({ isExpanded }) => (
+              <Ionicons
+                name="fast-food-outline"
+                color={Colors.primary}
+                size={20}
+                style={{ marginRight: "8%" }}
+              />
+            )}
+          >
+            <Text
+              style={{
+                paddingHorizontal: "4%",
+                paddingVertical: "1%",
+                fontFamily: "LatoBold",
+                color: Colors.medium,
+              }}
+            >
+              Choose Categories
+            </Text>
+            <View style={{ paddingHorizontal: 10, marginLeft: "1%" }}>
+              <FlatList
+                scrollEnabled={false}
+                data={CategoryData}
+                renderItem={renderCategoryItem}
+                keyExtractor={(item) => item.id.toString()}
+                style={
+                  {
+                    // height: Dimensions.get("window").height / 2.2,
+                  }
+                }
+                ListFooterComponent={() => (
+                  <View style={{ padding: "15%" }}></View>
+                )}
+              />
+            </View>
+          </List.Accordion>
+        </ScrollView>
       </View>
 
       <View style={styles.footer}>

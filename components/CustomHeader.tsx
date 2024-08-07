@@ -151,11 +151,12 @@ const CustomHeader = () => {
           settemperature("Rain");
         } else if (
           temp_c < 19 ||
-          condition?.text?.toLowerCase()?.includes("snow")
+          condition?.text?.toLowerCase()?.includes("snow") ||
+          condition?.text?.toLowerCase()?.includes("cold")
         ) {
           settemperature("Winter");
         } else if (
-          temp_c < 29 ||
+          temp_c > 28 ||
           condition?.text?.toLowerCase()?.includes("sun")
         ) {
           settemperature("Sun");

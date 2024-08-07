@@ -19,7 +19,6 @@ import StrikeText from "@/components/StrikeText";
 
 import GridViewComp from "@/components/GridViewComp";
 import PressableView from "@/components/PressableView";
-import { Stack } from "expo-router";
 
 const HorizontalSliderImages = [
   {
@@ -242,10 +241,9 @@ const index = () => {
     contentOffset,
     contentSize,
   }) => {
-    const paddingToBottom = 20;
+    // const paddingToBottom = 20;
     return (
-      layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 50
     );
   };
 
@@ -254,6 +252,7 @@ const index = () => {
       {/* <Stack.Screen options={{ headerShown: true }} /> */}
       <StatusBar backgroundColor={"transparent"} translucent />
       <ScrollView
+        overScrollMode="never"
         // onScroll={handleScroll}
         showsVerticalScrollIndicator={false}
         // style={styles.container}
@@ -282,7 +281,7 @@ const index = () => {
           }}
         />
         <MiniCarousel />
-        {/* <ParallaxCarousel data={HorizontalSliderImages} /> */}
+        <ParallaxCarousel data={HorizontalSliderImages} />
         <StrikeText
           text="Explore new deals"
           color="#000000"

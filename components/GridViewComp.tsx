@@ -105,6 +105,7 @@ const restaurantsData = [
 const GridViewComp = () => {
   return (
     <ScrollView
+      overScrollMode="never"
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{

@@ -74,19 +74,6 @@ export default function RootLayout() {
                 options={{
                   presentation: "modal",
                   animation: "slide_from_bottom",
-                  headerShown: false,
-                  // headerTitle: "Filters",
-                  // headerTitleStyle: { fontFamily: "LatoBold" },
-                  // headerTitleAlign: "center",
-                  headerShadowVisible: false,
-                  headerLeft: () => (
-                    <Pressable
-                      onPress={() => router.back()}
-                      style={{ paddingHorizontal: "2%" }}
-                    >
-                      <Ionicons name="close" color={"#000"} size={25} />
-                    </Pressable>
-                  ),
                 }}
               />
               <Stack.Screen
