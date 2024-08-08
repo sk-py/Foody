@@ -20,6 +20,8 @@ import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { startActivityAsync, ActivityAction } from "expo-intent-launcher";
+
 import LottieView from "lottie-react-native";
 import { useLocation } from "@/Context/LocationContext";
 import { router } from "expo-router";
@@ -95,6 +97,28 @@ const MapScreen = () => {
         );
         setLoading(false);
         return;
+      }
+
+      const hasServicesEnabled = await Location.hasServicesEnabledAsync();
+
+      if (!hasServicesEnabled) {
+        Alert.alert(
+          "Enable location",
+          "Please turn on location service to use this feature",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                startActivityAsync(ActivityAction.LOCATION_SOURCE_SETTINGS),
+            },
+          ]
+        );
+        const hasServicesEnabled = await Location.hasServicesEnabledAsync();
+        if (!hasServicesEnabled) {
+          return;
+        } else {
+          fetchLocation();
+        }
       }
 
       // Fetch current location

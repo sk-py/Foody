@@ -101,6 +101,7 @@ const restaurantDetail = [
             name: "Spicy Grilled Chicken",
             info: "Juicy grilled chicken with a spicy rub",
             price: "₹200",
+            imgSrc: require("@/assets/images/Category/honeygarlicwings.jpg"),
           },
           {
             id: 2,
@@ -1776,6 +1777,7 @@ const restaurantDetail = [
 const Details = () => {
   const [RestroDetails, setRestroDetails] = useState<any>([]);
   const [liked, setliked] = useState(false);
+
   const { id } = useLocalSearchParams();
   console.log(id);
 
@@ -1873,20 +1875,6 @@ const Details = () => {
       opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT], [0, 1]),
     };
   });
-
-  // const headerTitleStyle = useAnimatedStyle(() => {
-  //   return {
-  //     transform: [
-  //       {
-  //         translateX: interpolate(
-  //           scrollOffset.value,
-  //           [0, IMG_HEIGHT / 3],
-  //           [containerWidth, 0]
-  //         ),
-  //       },
-  //     ],
-  //   };
-  // });
 
   return (
     <>
@@ -2024,7 +2012,7 @@ const Details = () => {
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    gap: 5,
+                    gap: 4,
                   }}
                 >
                   <Ionicons name="star" size={16} color={Colors.primary} />
@@ -2039,7 +2027,7 @@ const Details = () => {
                     opacity: 0.6,
                   }}
                 >
-                  Rating
+                  Ratings
                 </Text>
               </View>
               <View style={styles.verticalSeparator} />

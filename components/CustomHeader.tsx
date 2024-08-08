@@ -11,7 +11,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import BottomSheetComp from "./BottomSheetComp";
 import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -318,7 +318,12 @@ const CustomHeader = () => {
               </TouchableOpacity>
             </TouchableOpacity>
             <TouchableOpacity style={styles.profileBtn}>
-              <Ionicons name="person" size={20} color={Colors.primary} />
+              <Ionicons
+                name="person"
+                size={20}
+                color={Colors.primary}
+                onPress={() => router.push("./Demo")}
+              />
             </TouchableOpacity>
           </View>
           <SearchBar />

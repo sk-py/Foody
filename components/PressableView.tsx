@@ -4,6 +4,8 @@ import { router } from "expo-router";
 import React, { useRef, useCallback } from "react";
 import { Animated, Image, Pressable, Text, View } from "react-native";
 
+// import useDebouncedNavigation from "@/Utils/useDebounce";
+
 const PressableView = React.memo(({ item }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -21,15 +23,17 @@ const PressableView = React.memo(({ item }) => {
     }).start();
   }, [scaleAnim]);
 
+  // const navigate = useDebouncedNavigation();
+
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
       <Pressable
-        onPress={() => {
-          router.navigate({
-            pathname: "./(modal)/Details",
-            params: { id: item?.id },
-          });
-        }}
+        // onPress={() => {
+        //   navigate({
+        //     pathname: "./(modal)/Details",
+        //     params: { id: item?.id },
+        //   });
+        // }}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         style={{
